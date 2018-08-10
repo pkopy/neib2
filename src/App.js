@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import Weather from './Weather'
+import Markers from './Markers'
 
 
 class App extends Component {
   state={
+    map:'',
+    markers:[],
     locations: [
       {type: 'bus stop', title:'Radomska 60', location: {lat:51.432822, lng:21.320922}, direction:'Radom'},
       {type: 'bus stop', title:'Radomska 69', location: {lat:51.432921, lng:21.318971}, direction:'Jedlnia-Letnisko'},
@@ -19,16 +22,66 @@ class App extends Component {
   }
 
   componentDidMount () {
-    const script = document.createElement("script");
+    
+        this.initMap()
+  }
 
-        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCOu94PdyQ8C-iv_GfghV4RDNGviPrtePY&v=3";
-        script.async = true;
-
-        document.body.appendChild(script);
+  initMap = () => {
+    //  let markers = this.state.markers
+    // let infoWindow = new google.maps.InfoWindow();
+    const google = window.google || {};
+    let bounds = new google.maps.LatLngBounds();
+  
+    // google.maps = google.map || {};
+    this.map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat:51.434571, lng: 21.316791},
+      zoom: 14,
+      mapTypeControl: false,
+    })   
+    this.setState({map: this.map})
+    // let pawel =   {lat:51.434571, lng: 21.316791};
+    for(let i = 0; i < this.state.locations.length; i++){
+      // console.log(location)
+      let marker = new google.maps.Marker({
+        position: this.state.locations[i].location,
+        // map: this.map,
+        animation: google.maps.Animation.DROP,
+        title:`${this.state.locations[i].type.toUpperCase()}\n${this.state.locations[i].title}`,
+        type: this.state.locations[i].type,
+        id: i,
+        icon: ''
+      }) 
+      this.state.markers.push(marker);
+      bounds.extend(marker.position)
+      // console.log(marker)
+    }
+    // this.state.actualMarkers = this.state.markers;
+  
+    this.setState({bounds: bounds})
+  
+    this.map.fitBounds(bounds)
+    
+    for(let marker of this.state.markers) {
+      // marker.setMap(this.state.map)
+        marker.addListener('click', () => {
+          this.showListing(marker)
+        })
+    }
+    
+    
+    //   content: "Tralala ldsasjfsa"
+    // }) 
+    // console.log(this.state.markers) 
   }
   render() {
+    console.log(this.state.map)
     return (
       <div className="App">
+        <div id="map"></div>
+        <Markers 
+          markers={this.state.markers}
+          map={this.state.map}
+        />
         <Weather 
           city={'jedlnia-letnisko'}
         />
