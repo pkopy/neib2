@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import './App.css';
 import Weather from './Weather'
 import Markers from './Markers'
+import iconBus from './busIcon.png'
+import iconBusHigh from './bus_icon_highlight.png'
 
 
 class App extends Component {
@@ -42,6 +44,10 @@ class App extends Component {
     // let pawel =   {lat:51.434571, lng: 21.316791};
     for(let i = 0; i < this.state.locations.length; i++){
       // console.log(location)
+      let icon='';
+      if(this.state.locations[i].type === 'bus stop') {
+        icon = iconBus;
+      }
       let marker = new google.maps.Marker({
         position: this.state.locations[i].location,
         // map: this.map,
@@ -49,7 +55,7 @@ class App extends Component {
         title:`${this.state.locations[i].type.toUpperCase()}\n${this.state.locations[i].title}`,
         type: this.state.locations[i].type,
         id: i,
-        icon: ''
+        icon: icon
       }) 
       this.state.markers.push(marker);
       bounds.extend(marker.position)
@@ -61,24 +67,30 @@ class App extends Component {
   
     this.map.fitBounds(bounds)
     
-    for(let marker of this.state.markers) {
-      // marker.setMap(this.state.map)
-        marker.addListener('click', () => {
-          this.showListing(marker)
-        })
-    }
+    // for(let marker of this.state.markers) {
+    //   // marker.setMap(this.state.map)
+    //     marker.addListener('click', () => {
+    //       this.showListing(marker)
+    //     })
+    // }
     
     
     //   content: "Tralala ldsasjfsa"
     // }) 
     // console.log(this.state.markers) 
   }
+
+  
+
+
+
   render() {
     console.log(this.state.map)
     return (
       <div className="App">
         <div id="map"></div>
-        <Markers 
+        <Markers
+          
           markers={this.state.markers}
           map={this.state.map}
         />
