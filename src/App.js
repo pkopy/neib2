@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import './App.css';
 import Weather from './Weather'
 import Markers from './Markers'
-import iconBus from './busIcon.png'
+import iconBus from './bus-station.svg'
+import iconHouse from './house.png'
 import iconBusHigh from './bus_icon_highlight.png'
 
 
@@ -17,7 +18,7 @@ class App extends Component {
       {type: 'bus stop', title:'Siczki', location: {lat:51.437613, lng:21.30547}, direction:'Radom'},
       {type: 'bus stop', title:'Radomska 32', location: {lat:51.432071, lng:21.326588}, direction:'Radom'},
       {type: 'bus stop', title:'Piłsudski Square', location: {lat:51.430069, lng:21.327622}, direction:'Radom'},
-      {type:'place', title:'Pawel`s home', location: {lat:51.434571, lng: 21.316791}},
+      {type:'home', title:'Pawel`s home', location: {lat:51.434571, lng: 21.316791}},
       {type:'place', title:'Monument to the victims of the Nazi occupation', location: {lat:51.430406, lng: 21.32743}},
       {type:'place', title:'Church of St Joseph', location: {lat:51.434173, lng: 21.327767}},
     ]
@@ -33,21 +34,57 @@ class App extends Component {
     // let infoWindow = new google.maps.InfoWindow();
     const google = window.google || {};
     let bounds = new google.maps.LatLngBounds();
-  
+    let styledMap = new google.maps.StyledMapType(
+      [
+        {
+          "elementType": "labels",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "administrative.land_parcel",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "administrative.neighborhood",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        }
+      ]
+    )
     // google.maps = google.map || {};
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat:51.434571, lng: 21.316791},
       zoom: 14,
+      
       mapTypeControl: false,
-    })   
+    })  
+    this.map.mapTypes.set('styled_map', styledMap);
+        this.map.setMapTypeId('styled_map');
+
     this.setState({map: this.map})
     // let pawel =   {lat:51.434571, lng: 21.316791};
     for(let i = 0; i < this.state.locations.length; i++){
       // console.log(location)
       let icon='';
-      if(this.state.locations[i].type === 'bus stop') {
-        icon = iconBus;
+      switch (this.state.locations[i].type) {
+        case 'bus stop':
+          icon = iconBus;
+          break
+        case 'home':
+          icon = iconHouse
       }
+      
       let marker = new google.maps.Marker({
         position: this.state.locations[i].location,
         // map: this.map,

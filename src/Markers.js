@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import iconBusHigh from './bus_icon_highlight.png'
+import iconBusHigh from './bus-station-green.svg'
 
 class Markers extends Component {
 
