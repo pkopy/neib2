@@ -5,6 +5,7 @@ import Weather from './Weather'
 import Markers from './Markers'
 import iconBus from './bus-station.svg'
 import iconHouse from './house.png'
+import iconChurch from './church.svg'
 import iconBusHigh from './bus_icon_highlight.png'
 
 
@@ -20,7 +21,7 @@ class App extends Component {
       {type: 'bus stop', title:'Piłsudski Square', location: {lat:51.430069, lng:21.327622}, direction:'Radom'},
       {type:'home', title:'Pawel`s home', location: {lat:51.434571, lng: 21.316791}},
       {type:'place', title:'Monument to the victims of the Nazi occupation', location: {lat:51.430406, lng: 21.32743}},
-      {type:'place', title:'Church of St Joseph', location: {lat:51.434173, lng: 21.327767}},
+      {type:'church', title:'Church of St Joseph', location: {lat:51.434173, lng: 21.327767}},
     ]
   }
 
@@ -37,7 +38,7 @@ class App extends Component {
     let styledMap = new google.maps.StyledMapType(
       [
         {
-          "elementType": "labels",
+          "featureType": "poi.business",
           "stylers": [
             {
               "visibility": "off"
@@ -45,7 +46,7 @@ class App extends Component {
           ]
         },
         {
-          "featureType": "administrative.land_parcel",
+          "featureType": "poi.government",
           "stylers": [
             {
               "visibility": "off"
@@ -53,7 +54,50 @@ class App extends Component {
           ]
         },
         {
-          "featureType": "administrative.neighborhood",
+          "featureType": "poi.medical",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "poi.medical",
+          "elementType": "geometry.fill",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "poi.medical",
+          "elementType": "geometry.stroke",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "poi.medical",
+          "elementType": "labels.text",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "poi.place_of_worship",
+          "stylers": [
+            {
+              "visibility": "off"
+            }
+          ]
+        },
+        {
+          "featureType": "poi.school",
           "stylers": [
             {
               "visibility": "off"
@@ -61,6 +105,8 @@ class App extends Component {
           ]
         }
       ]
+      
+      
     )
     // google.maps = google.map || {};
     this.map = new google.maps.Map(document.getElementById('map'), {
@@ -82,7 +128,13 @@ class App extends Component {
           icon = iconBus;
           break
         case 'home':
-          icon = iconHouse
+          icon = iconHouse;
+          break;
+        case 'church':
+          icon = iconChurch;
+          break;
+        default:
+          icon = '';
       }
       
       let marker = new google.maps.Marker({

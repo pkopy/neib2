@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import iconBusHigh from './bus-station-green.svg'
+import iconChurchHigh from './church-green.svg'
 
 class Markers extends Component {
 
@@ -15,7 +16,19 @@ class Markers extends Component {
   // 
   updateIcon = (marker) => {
     this.setState({icon: marker.icon})
-    marker.icon = iconBusHigh
+    switch (marker.type) {
+      case 'bus stop':
+        marker.icon = iconBusHigh;
+        break
+      // case 'home':
+      //   marker.icon = iconHouse;
+      //   break;
+      case 'church':
+        marker.icon = iconChurchHigh;
+        break;
+      default:
+        marker.icon = marker.icon;
+    }
   }
 
   defaultIcon = (marker) => {
