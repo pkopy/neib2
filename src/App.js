@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import './App.css';
 import Weather from './Weather'
 import Markers from './Markers'
-import iconBus from './bus-station.svg'
-import iconHouse from './house.png'
-import iconChurch from './church.svg'
-import iconBusHigh from './bus_icon_highlight.png'
+import iconBus from './img/bus-station.svg'
+import iconHouse from './img/house.png'
+import iconChurch from './img/church.svg'
+// import iconBusHigh from './bus_icon_highlight.png'
 
 
 class App extends Component {
@@ -111,7 +111,7 @@ class App extends Component {
     // google.maps = google.map || {};
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat:51.434571, lng: 21.316791},
-      zoom: 14,
+      zoom: 15,
       
       mapTypeControl: false,
     })  
@@ -174,7 +174,7 @@ class App extends Component {
 
 
   render() {
-    console.log(this.state.map)
+    // console.log(this.state.map)
     return (
       <div className="App">
         <div id="map"></div>
@@ -186,9 +186,9 @@ class App extends Component {
         <Weather 
           city={'jedlnia-letnisko'}
         />
-        <Weather 
+        {/* <Weather 
           city={'radom'}
-        />
+        /> */}
       </div>
     );
   }

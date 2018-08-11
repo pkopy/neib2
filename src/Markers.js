@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import iconBusHigh from './bus-station-green.svg'
-import iconChurchHigh from './church-green.svg'
+import iconBusHigh from './img/bus-station-green.svg'
+import iconChurchHigh from './img/church-green.svg'
 
 class Markers extends Component {
 
@@ -10,7 +10,7 @@ class Markers extends Component {
   }
 
   updateQuery = (query) =>{
-    this.setState({query: query.trim()})
+    this.setState({query: query})
   }
 
   // 
@@ -29,6 +29,15 @@ class Markers extends Component {
       default:
         marker.icon = marker.icon;
     }
+  }
+
+  test = (marker) => {
+    // console.log(marker)
+    const google = window.google || {};
+    let anim = google.maps.Animation.BOUNCE
+    marker.setAnimation(anim)
+    console.log(marker.description)
+    this.updateQuery(marker.title)
   }
 
   defaultIcon = (marker) => {
@@ -67,28 +76,36 @@ class Markers extends Component {
       marker.setMap(map);
       bounds.extend(marker.position);
       map.fitBounds(bounds)
+      map.setCenter()
+      
     }
     
   
     return(
       <div>
-        <input
-          className='search-contacts'
-          type='text'
-          placeholder='Search contacts'
-          value={this.state.query}
-          onChange={(event) => this.updateQuery(event.target.value)}
-        />
-        <ol style={{position: 'absolute'}}>
-                    {showingMarkers.map((marker) =>
-                        <li key={marker.id} id={`marker:${marker.id}`}>
-                            <div onMouseOver={() => this.updateIcon(marker)} onMouseOut={() => this.defaultIcon(marker)} >
-                                {marker.title}
-                            </div>
+        <header className="App-header">    
+          <h1 className="App-title">Jedlnia-Letnisko Info</h1>
+          <div className="search-bar" >
+            <input
+              className='search-places'
+              type='text'
+              placeholder='Search by bus, name or address'
+              value={this.state.query}
+              onChange={(event) => this.updateQuery(event.target.value)}
+              onClick={(e)=>e.target.value=''}
+            />
+          </div>
+        </header>
+        {(query!=='')?(<ol className="search-list">
+            {showingMarkers.map((marker) =>
+                <li key={marker.id} className="search-item" onClick={() => {this.test(marker)}} onMouseOver={() => this.updateIcon(marker)} onMouseOut={() => this.defaultIcon(marker)}>
+                    <div  >
+                        {marker.title}
+                    </div>
 
-                        </li> 
-                    )}
-                </ol>
+                </li> 
+            )}
+        </ol>):''}
       </div>
     )
   }
