@@ -3,7 +3,7 @@ import iconBusHigh from './img/bus-station-green.svg'
 import iconChurchHigh from './img/church-green.svg'
 
 class Markers extends Component {
-
+  
   state = {
     query:'',
     icon:'',
@@ -15,34 +15,38 @@ class Markers extends Component {
 
   // 
   updateIcon = (marker) => {
+    console.log(marker.iconHigh)
     this.setState({icon: marker.icon})
-    switch (marker.type) {
-      case 'bus stop':
-        marker.icon = iconBusHigh;
-        break
-      // case 'home':
-      //   marker.icon = iconHouse;
-      //   break;
-      case 'church':
-        marker.icon = iconChurchHigh;
-        break;
-      default:
-        marker.icon = marker.icon;
-    }
+    // switch (marker.type) {
+    //   case 'bus stop':
+    //     marker.icon = iconBusHigh;
+    //     break
+    //   // case 'home':
+    //   //   marker.icon = iconHouse;
+    //   //   break;
+    //   case 'church':
+    //     marker.icon = iconChurchHigh;
+    //     break;
+    //   default:
+    //     marker.icon = marker.icon;
+    // }
+    marker.icon = marker.iconHigh
+    const google = window.google || {};
+    let anim = google.maps.Animation.BOUNCE
+    marker.setAnimation(anim)
+    // this.updateQuery(marker.title)
   }
 
   test = (marker) => {
     // console.log(marker)
-    const google = window.google || {};
-    let anim = google.maps.Animation.BOUNCE
-    marker.setAnimation(anim)
-    console.log(marker.description)
     this.updateQuery(marker.title)
   }
 
   defaultIcon = (marker) => {
     marker.icon = this.state.icon;
+    marker.setAnimation(null)
     this.setState({icon: ''})
+    
   }
 
   
@@ -54,7 +58,7 @@ class Markers extends Component {
     let showingMarkers
         if(query){
             const match = new RegExp(this.state.query, 'i')
-            showingMarkers = markers.filter((marker) => match.test(marker.title))
+            showingMarkers = markers.filter((marker) => match.test(marker.title) || match.test(marker.type) )
         }else{
             showingMarkers = markers;
         }
@@ -76,7 +80,7 @@ class Markers extends Component {
       marker.setMap(map);
       bounds.extend(marker.position);
       map.fitBounds(bounds)
-      map.setCenter()
+      // map.setCenter()
       
     }
     
@@ -92,7 +96,11 @@ class Markers extends Component {
               placeholder='Search by bus, name or address'
               value={this.state.query}
               onChange={(event) => this.updateQuery(event.target.value)}
-              onClick={(e)=>e.target.value=''}
+              onClick={(e)=>{
+                e.target.value='';
+                this.updateQuery(e.target.value)
+              }}
+              
             />
           </div>
         </header>

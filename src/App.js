@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import './App.css';
 import Weather from './Weather'
 import Markers from './Markers'
-import iconBus from './img/bus-station.svg'
-import iconHouse from './img/house.png'
-import iconChurch from './img/church.svg'
+// import iconBus from './img/bus-station.svg'
+// import iconHouse from './img/house.png'
+// import iconChurch from './img/church.svg'
 // import iconBusHigh from './bus_icon_highlight.png'
 
 
@@ -129,29 +129,30 @@ class App extends Component {
     // let pawel =   {lat:51.434571, lng: 21.316791};
     for(let i = 0; i < this.state.locations.length; i++){
       // console.log(location)
-      let icon='';
-      switch (this.state.locations[i].type) {
-        case 'bus stop':
-          icon = iconBus;
-          break
-        case 'home':
-          icon = iconHouse;
-          break;
-        case 'church':
-          icon = iconChurch;
-          break;
-        default:
-          icon = '';
-      }
+      // let icon='';
+      // switch (this.state.locations[i].type) {
+      //   case 'bus stop':
+      //     icon = iconBus;
+      //     break
+      //   case 'home':
+      //     icon = iconHouse;
+      //     break;
+      //   case 'church':
+      //     icon = iconChurch;
+      //     break;
+      //   default:
+      //     icon = '';
+      // }
       
       let marker = new google.maps.Marker({
         position: this.state.locations[i].location,
         // map: this.map,
         animation: google.maps.Animation.DROP,
-        title:`${this.state.locations[i].type.toUpperCase()}\n${this.state.locations[i].title}`,
+        title:this.state.locations[i].title,
         type: this.state.locations[i].type,
         id: i,
-        icon: icon
+        icon: this.state.locations[i].icon,
+        iconHigh: this.state.locations[i].iconHigh,
       }) 
       this.state.markers.push(marker);
       bounds.extend(marker.position)
