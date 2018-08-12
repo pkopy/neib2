@@ -98,6 +98,14 @@ button {
   border-bottom: 1px solid #888;
 }
 .search-item:hover {
+  
+  background: #3390dcd4
+}
+.search-item-hover {
+  padding: .7em;
+  text-align: left;
+  background: #2222228f;
+  color: #fff;
   background: #3390dcd4
 }
 

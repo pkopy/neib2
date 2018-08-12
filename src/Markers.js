@@ -15,7 +15,7 @@ class Markers extends Component {
 
   // 
   updateIcon = (marker) => {
-    console.log(marker.iconHigh)
+    // console.log(marker.iconHigh)
     this.setState({icon: marker.icon})
     // switch (marker.type) {
     //   case 'bus stop':
@@ -95,18 +95,51 @@ class Markers extends Component {
               type='text'
               placeholder='Search by bus, name or address'
               value={this.state.query}
-              onChange={(event) => this.updateQuery(event.target.value)}
+              onChange={(event) => {this.updateQuery(event.target.value);
+                let count = 0
+                window.addEventListener('keydown', (e) => {
+                let liArray = document.querySelectorAll('li')
+                for(let elem of liArray){
+                  elem.className = "search-item"
+                }
+                
+                if(count === liArray.length) count=0
+                console.log(count)
+                if(e.keyCode === 40 && liArray.length > 0 && count === 0) {
+                  liArray[liArray.length-1].className="search-item"
+                  liArray[liArray.length-1].blur()
+
+                  liArray[count].focus()
+                  liArray[count].className="search-item-hover"
+                  count++;
+                }else if(e.keyCode === 40 && liArray.length > 0 && count > 0) {
+                  liArray[count-1].className="search-item"
+                  liArray[count-1].blur()
+                  liArray[count].className="search-item-hover"
+                  liArray[count].focus()
+                  count++
+                }
+              
+              })
+              
+              }
+                
+              }
               onClick={(e)=>{
+                
                 e.target.value='';
                 this.updateQuery(e.target.value)
               }}
               
+              
             />
           </div>
         </header>
-        {(query!=='')?(<ol className="search-list">
+        {(query!=='')?(<ol tabIndex="-1" className="search-list">
             {showingMarkers.map((marker) =>
-                <li key={marker.id} className="search-item" onClick={() => {this.test(marker)}} onMouseOver={() => this.updateIcon(marker)} onMouseOut={() => this.defaultIcon(marker)}>
+                <li key={marker.id} tabIndex={marker.id} className="search-item" 
+                onFocus={() => this.updateIcon(marker)} onBlur={() =>this.defaultIcon(marker)} onClick={() => {this.test(marker)}} 
+                onMouseOver={() => this.updateIcon(marker)} onMouseOut={() => this.defaultIcon(marker)}>
                     <div  >
                         {marker.title}
                     </div>
