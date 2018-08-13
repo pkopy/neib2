@@ -14,6 +14,18 @@ class Markers extends Component {
   updateQuery = (query) =>{
     this.setState({query: query})
   }
+  initialize = (marker) =>{
+    const google = window.google || {};
+    let panorama = new google.maps.StreetViewPanorama(
+      document.getElementById('pano'), {
+        position: marker.position,
+        pov: {
+          heading: 34,
+          pitch: 10
+        }
+      });
+      this.props.map.setStreetView(panorama);
+  }
 
   // 
   updateIcon = (marker) => {
@@ -27,6 +39,7 @@ class Markers extends Component {
   test = (marker) => {
     // console.log(marker)
     this.updateQuery(marker.title)
+  
     // marker.icon = this.state.icon;
   }
 
@@ -144,7 +157,7 @@ class Markers extends Component {
           </div>
         </header>
 
-        {(query!=='')?(<ol tabIndex="-1" className="search-list">
+        <ol tabIndex="-1" className="search-list">
             {showingMarkers.map((marker) =>
                 <li key={marker.id} tabIndex="-1" className="search-item" 
                   onFocus={() => this.updateIcon(marker)} onBlur={() =>this.defaultIcon(marker)} onClick={() => {this.test(marker)}} 
@@ -155,7 +168,7 @@ class Markers extends Component {
 
                 </li> 
             )}
-        </ol>):''}
+        </ol>
       </div>
     )
   }
