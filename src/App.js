@@ -1,13 +1,8 @@
-import React, { Component } from 'react';
-// import logo from './logo.svg';
+import React, { Component } from 'react'
 import './App.css';
 import Weather from './Weather'
 import Markers from './Markers'
-// import iconBus from './img/bus-station.svg'
-// import iconHouse from './img/house.png'
-// import iconChurch from './img/church.svg'
-// import iconBusHigh from './bus_icon_highlight.png'
-
+import iconChurchHigh from './img/church-green.svg'
 
 class App extends Component {
   state={
@@ -23,25 +18,23 @@ class App extends Component {
       token = localStorage.token = Math.random().toString(36).substr(-8)
     }
     fetch('http://46.41.150.120:5001/locations', {
-          headers: {
-            'Accept': 'application/json',
-            'Authorization':token
-          }
+        headers: {
+          'Accept': 'application/json',
+          'Authorization':token
+        }
      })
       .then(res => res.json())
       .then(data=>{
         this.setState({locations:data.locations})
-        this.initMap()
-        
+        this.initMap()  
       })
     
   }
 
   initMap = () => {
-    //  let markers = this.state.markers
-    // let infoWindow = new google.maps.InfoWindow();
     const google = window.google || {};
     let bounds = new google.maps.LatLngBounds();
+    let largeInfoWindow = new google.maps.InfoWindow()
     let styledMap = new google.maps.StyledMapType(
       [
         {
@@ -111,78 +104,65 @@ class App extends Component {
             }
           ]
         }
-      ]
-      
-      
+      ]  
     )
-    // google.maps = google.map || {};
+    
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat:51.434571, lng: 21.316791},
       zoom: 15,
-      
       mapTypeControl: false,
     })  
-    this.map.mapTypes.set('styled_map', styledMap);
-        this.map.setMapTypeId('styled_map');
 
+    this.map.mapTypes.set('styled_map', styledMap);
+    this.map.setMapTypeId('styled_map');
+  
     this.setState({map: this.map})
-    // let pawel =   {lat:51.434571, lng: 21.316791};
+    // this.state.map.addListener('click', ()=> console.log('xx'))
+    
     for(let i = 0; i < this.state.locations.length; i++){
-      // console.log(location)
-      // let icon='';
-      // switch (this.state.locations[i].type) {
-      //   case 'bus stop':
-      //     icon = iconBus;
-      //     break
-      //   case 'home':
-      //     icon = iconHouse;
-      //     break;
-      //   case 'church':
-      //     icon = iconChurch;
-      //     break;
-      //   default:
-      //     icon = '';
-      // }
-      
+            
       let marker = new google.maps.Marker({
         position: this.state.locations[i].location,
-        // map: this.map,
         animation: google.maps.Animation.DROP,
         title:this.state.locations[i].title,
         type: this.state.locations[i].type,
         id: i,
-        icon: this.state.locations[i].icon,
+        icon: this.state.locations[i].iconDefault,
+        iconDefault: this.state.locations[i].iconDefault,
         iconHigh: this.state.locations[i].iconHigh,
       }) 
       this.state.markers.push(marker);
       bounds.extend(marker.position)
-      // console.log(marker)
+      marker.addListener('click', () =>{
+        if(largeInfoWindow.marker !== marker) {
+          largeInfoWindow.marker = marker;
+          largeInfoWindow.setContent(`<div><strong>${marker.title.toUpperCase()}</strong></div> 
+          <img src=${marker.icon}>
+          <div> ${marker.position} </div>`)
+          largeInfoWindow.open(this.map, marker)
+        }
+      })
     }
-    // this.state.actualMarkers = this.state.markers;
   
     this.setState({bounds: bounds})
-  
     this.map.fitBounds(bounds)
-    
-    // for(let marker of this.state.markers) {
-    //   // marker.setMap(this.state.map)
-    //     marker.addListener('click', () => {
-    //       this.showListing(marker)
-    //     })
-    // }
-    
-    
-    //   content: "Tralala ldsasjfsa"
-    // }) 
-    // console.log(this.state.markers) 
+    function populateInfoWindow(marker, infoWindow, map){
+      if (infoWindow.marker != marker) {
+          infoWindow.marker = marker;
+          infoWindow.setContent(`<div>${marker.title}\n ${marker.position} </div>`)
+          infoWindow.open(map, marker);
+          // infoWindow.addListener('closeclick', () =>
+          //     infoWindow.setMaker(null)
+          // )
+      }
+    }
   }
 
-  
 
 
 
   render() {
-    // console.log(this.state.map)
+    
     return (
       <div className="App">
         <div id="map"></div>
@@ -194,9 +174,6 @@ class App extends Component {
         <Weather 
           city={'jedlnia-letnisko'}
         />
-        {/* <Weather 
-          city={'radom'}
-        /> */}
       </div>
     );
   }

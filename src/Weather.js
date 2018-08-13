@@ -16,10 +16,14 @@ class Weather extends Component {
   render() {
     const { temp, icon } = this.state
     return (
-      <div className="weather">
-        <div>{temp} &#176;C</div>
-        {icon ? <img src={icon} alt="weather`s icon" /> : <span>...</span>}
-        <p>Powered by Openweathermap.org</p>
+      <div>
+        <div className="weather">
+          <div>{temp} &#176;C</div>
+          {icon ? <img src={icon} alt="weather`s icon" /> : <span>...</span>}
+          <p>Powered by Openweathermap.org</p>
+        </div>
+        
+        {icon ? <img src={icon} alt="weather`s icon" className="weather_icon"/> : <span></span>}
       </div>
     )
   }

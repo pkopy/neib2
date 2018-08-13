@@ -7,6 +7,8 @@ class Markers extends Component {
   state = {
     query:'',
     icon:'',
+    count:-1,
+    moveFlag: true
   }
 
   updateQuery = (query) =>{
@@ -15,38 +17,65 @@ class Markers extends Component {
 
   // 
   updateIcon = (marker) => {
-    // console.log(marker.iconHigh)
-    this.setState({icon: marker.icon})
-    // switch (marker.type) {
-    //   case 'bus stop':
-    //     marker.icon = iconBusHigh;
-    //     break
-    //   // case 'home':
-    //   //   marker.icon = iconHouse;
-    //   //   break;
-    //   case 'church':
-    //     marker.icon = iconChurchHigh;
-    //     break;
-    //   default:
-    //     marker.icon = marker.icon;
-    // }
     marker.icon = marker.iconHigh
     const google = window.google || {};
     let anim = google.maps.Animation.BOUNCE
     marker.setAnimation(anim)
-    // this.updateQuery(marker.title)
+    
   }
 
   test = (marker) => {
     // console.log(marker)
     this.updateQuery(marker.title)
+    // marker.icon = this.state.icon;
   }
 
   defaultIcon = (marker) => {
-    marker.icon = this.state.icon;
+    // console.log(marker.icon)
+    marker.icon = marker.iconDefault;
     marker.setAnimation(null)
-    this.setState({icon: ''})
+    // this.setState({icon: ''})
     
+  }
+
+  move = (e) => {
+    let array = document.querySelectorAll('li')
+    let count = this.state.count;
+    console.log(count)
+  
+    for(let elem of array){
+      elem.className = "search-item"
+    }
+    
+    if(count === array.length-1) {
+      count = -1; this.setState({count:count})
+    }
+    
+    
+      
+    if(e.keyCode === 40 && array.length > 0) {
+      count++;
+      
+      console.log(count)
+      array[count].focus()
+      array[count].className="search-item-hover"
+     
+      this.setState({count:count})
+    }
+    if(e.keyCode === 38 && array.length > 0) {
+      if(count === -1){
+        count = array.length-1
+      }else if(count === 0) {
+        count = array.length
+      }
+      count--;
+      // console.log(count)
+      array[count].focus()
+      array[count].className="search-item-hover"
+     
+      this.setState({count:count})
+    }
+  
   }
 
   
@@ -96,53 +125,33 @@ class Markers extends Component {
               placeholder='Search by bus, name or address'
               value={this.state.query}
               onChange={(event) => {this.updateQuery(event.target.value);
-                let count = 0
-                window.addEventListener('keydown', (e) => {
-                let liArray = document.querySelectorAll('li')
-                for(let elem of liArray){
-                  elem.className = "search-item"
-                }
                 
-                if(count === liArray.length) count=0
-                console.log(count)
-                if(e.keyCode === 40 && liArray.length > 0 && count === 0) {
-                  liArray[liArray.length-1].className="search-item"
-                  liArray[liArray.length-1].blur()
-
-                  liArray[count].focus()
-                  liArray[count].className="search-item-hover"
-                  count++;
-                }else if(e.keyCode === 40 && liArray.length > 0 && count > 0) {
-                  liArray[count-1].className="search-item"
-                  liArray[count-1].blur()
-                  liArray[count].className="search-item-hover"
-                  liArray[count].focus()
-                  count++
-                }
-              
-              })
+                window.addEventListener('keydown', this.move)
               
               }
                 
               }
               onClick={(e)=>{
-                
                 e.target.value='';
                 this.updateQuery(e.target.value)
+                window.removeEventListener('keydown', this.move)
+                this.setState({count:-1})
+
               }}
               
               
             />
           </div>
         </header>
+
         {(query!=='')?(<ol tabIndex="-1" className="search-list">
             {showingMarkers.map((marker) =>
-                <li key={marker.id} tabIndex={marker.id} className="search-item" 
-                onFocus={() => this.updateIcon(marker)} onBlur={() =>this.defaultIcon(marker)} onClick={() => {this.test(marker)}} 
-                onMouseOver={() => this.updateIcon(marker)} onMouseOut={() => this.defaultIcon(marker)}>
-                    <div  >
+                <li key={marker.id} tabIndex="-1" className="search-item" 
+                  onFocus={() => this.updateIcon(marker)} onBlur={() =>this.defaultIcon(marker)} onClick={() => {this.test(marker)}} 
+                  onMouseOver={() => this.updateIcon(marker)} onMouseOut={() => this.defaultIcon(marker)}>
+                    
                         {marker.title}
-                    </div>
+                    
 
                 </li> 
             )}
