@@ -30,6 +30,21 @@ class App extends Component {
       })
     
   }
+  infoWindow = (marker, largeInfoWindow) => {
+    marker.addListener('click', () =>{
+      if(largeInfoWindow.marker !== marker) {
+        largeInfoWindow.marker = marker;
+        largeInfoWindow.setContent(`<div><strong>${marker.title.toUpperCase()}</strong></div> 
+        <div><span>${marker.type.toUpperCase()}</span></div>
+        <img src=${marker.icon}> 
+        <div> ${marker.position} </div>`)
+        largeInfoWindow.open(this.map, marker)
+      }
+    })
+    largeInfoWindow.addListener('closeclick', ()=>{
+      largeInfoWindow.marker=null
+    })
+  }
 
   initMap = () => {
     const google = window.google || {};
@@ -133,29 +148,12 @@ class App extends Component {
       }) 
       this.state.markers.push(marker);
       bounds.extend(marker.position)
-      marker.addListener('click', () =>{
-        if(largeInfoWindow.marker !== marker) {
-          largeInfoWindow.marker = marker;
-          largeInfoWindow.setContent(`<div><strong>${marker.title.toUpperCase()}</strong></div> 
-          <img src=${marker.icon}>
-          <div> ${marker.position} </div>`)
-          largeInfoWindow.open(this.map, marker)
-        }
-      })
+      this.infoWindow(marker, largeInfoWindow)
     }
   
     this.setState({bounds: bounds})
     this.map.fitBounds(bounds)
-    function populateInfoWindow(marker, infoWindow, map){
-      if (infoWindow.marker != marker) {
-          infoWindow.marker = marker;
-          infoWindow.setContent(`<div>${marker.title}\n ${marker.position} </div>`)
-          infoWindow.open(map, marker);
-          // infoWindow.addListener('closeclick', () =>
-          //     infoWindow.setMaker(null)
-          // )
-      }
-    }
+    
   }
 
 

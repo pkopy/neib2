@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import iconBusHigh from './img/bus-station-green.svg'
+import iconBurger from './img/burger_menu.svg'
 import iconChurchHigh from './img/church-green.svg'
 
 class Markers extends Component {
@@ -7,8 +7,7 @@ class Markers extends Component {
   state = {
     query:'',
     icon:'',
-    count:-1,
-    moveFlag: true
+    
   }
 
   updateQuery = (query) =>{
@@ -16,9 +15,11 @@ class Markers extends Component {
   }
 
   // 
-  updateIcon = (marker) => {
-    marker.icon = marker.iconHigh
+  updateIcon = (marker, e) => {
     this.render()
+    marker.icon = marker.iconHigh
+    console.log(e.target)
+    e.target.className="search-item-hover"
     const google = window.google || {};
     let anim = google.maps.Animation.BOUNCE
     marker.setAnimation(anim)
@@ -27,59 +28,81 @@ class Markers extends Component {
 
   test = (marker) => {
     this.updateQuery(marker.title)
+    this.props.map.click
+    // this.render()
   }
 
-  defaultIcon = (marker) => {
+  defaultIcon = (marker, e) => {
     marker.icon = marker.iconDefault;
-    this.render()
+    e.target.className="search-item"
+    e.target.blur()
     marker.setAnimation(null)
+    this.render()
     
   }
 
-  move = (e) => {
-    let array = document.querySelectorAll('li')
-    let count = this.state.count;
-    console.log(count)
-  
-    for(let elem of array){
-      elem.className = "search-item"
-    }
-    
-    if(count === array.length-1) {
-      count = -1; this.setState({count:count})
-    }
-    
-    
+  hideMenu = () => {
+    let drawer = document.querySelector('.nav');
+    let search = document.querySelector('.search-places')
+    let icon = document.querySelector('.search-icon')
+    drawer.classList.toggle('open');
+    // icon.classList.toggle('close')
+    if(search.disabled) {
       
-    if(e.keyCode === 40 && array.length > 0) {
-      count++;
-      
-      console.log(count)
-      array[count].focus()
-      array[count].className="search-item-hover"
-     
-      this.setState({count:count})
+      search.removeAttribute('disabled')
+      search.placeholder='Search by bus, name or address'
+    }else{
+      search.value=''
+      search.setAttribute('disabled','')
+      search.placeholder='Click to search'
     }
-    if(e.keyCode === 38 && array.length > 0) {
-      if(count === -1){
-        count = array.length-1
-      }else if(count === 0) {
-        count = array.length
-      }
-      count--;
-      // console.log(count)
-      array[count].focus()
-      array[count].className="search-item-hover"
-     
-      this.setState({count:count})
-    }
-  
+    console.log(search.disabled)
   }
+
+  // move = (e) => {
+  //   let array = document.querySelectorAll('li')
+  //   let count = this.state.count;
+  //   console.log(count)
+  
+  //   for(let elem of array){
+  //     elem.className = "search-item"
+  //   }
+    
+  //   if(count === array.length-1) {
+  //     count = -1; this.setState({count:count})
+  //   }
+    
+    
+      
+  //   if(e.keyCode === 40 && array.length > 0) {
+  //     count++;
+      
+  //     console.log(count)
+  //     array[count].focus()
+  //     array[count].className="search-item-hover"
+     
+  //     this.setState({count:count})
+  //   }
+  //   if(e.keyCode === 38 && array.length > 0) {
+  //     if(count === -1){
+  //       count = array.length-1
+  //     }else if(count === 0) {
+  //       count = array.length
+  //     }
+  //     count--;
+  //     // console.log(count)
+  //     array[count].focus()
+  //     array[count].className="search-item-hover"
+     
+  //     this.setState({count:count})
+  //   }
+  
+  // }
 
   
 
   render () {
-    const { markers, map } = this.props;
+    const { markers, map, infoWindow } = this.props;
     const { query } = this.state;
 
     let showingMarkers
@@ -98,12 +121,14 @@ class Markers extends Component {
     
     const google = window.google || {};
     let bounds = new google.maps.LatLngBounds();
+    let largeInfoWindow = new google.maps.InfoWindow()
    
     for(let marker of markers) {
       marker.setMap(null)
     }
 
     for(let marker of showingMarkers) {
+      
       marker.setMap(map);
       bounds.extend(marker.position);
       map.fitBounds(bounds)
@@ -117,6 +142,7 @@ class Markers extends Component {
         <header className="App-header">    
           <h1 className="App-title">Jedlnia-Letnisko Info</h1>
           <div className="search-bar" >
+            <div className="search-icon" onClick={()=>this.hideMenu()}></div>
             <input
               className='search-places'
               type='text'
@@ -125,36 +151,46 @@ class Markers extends Component {
               tabIndex="1"
               onChange={(event) => {this.updateQuery(event.target.value);
                 
-                window.addEventListener('keydown', this.move)
+                // window.addEventListener('keydown', this.move)
               
               }
                 
               }
               onClick={(e)=>{
                 e.target.value='';
-                this.updateQuery(e.target.value)
-                window.removeEventListener('keydown', this.move)
-                this.setState({count:-1})
+                if(e.target.disabled){
+                  this.updateQuery(e.target.value)
+                  this.hideMenu()
+                }
+                // this.updateQuery(e.target.value)
 
+                // window.removeEventListener('keydown', this.move)
+                
               }}
               
               
             />
+            <div className="refresh-icon" 
+              onClick={()=>this.updateQuery('')}
+            ></div>
+
           </div>
         </header>
-
+        <div className="nav open">
         <ol     className="search-list">
             {showingMarkers.map((marker) =>
                 <li key={marker.id} tabIndex={marker.id+1} className="search-item" 
-                  onFocus={() => this.updateIcon(marker)} onBlur={() =>this.defaultIcon(marker)} onClick={() => {this.test(marker)}} 
-                  onMouseOver={() => this.updateIcon(marker)} onMouseOut={() => this.defaultIcon(marker)}>
+                  onFocus={(e) => {this.updateIcon(marker,e)}} onBlur={(e) =>this.defaultIcon(marker, e)} onClick={() => {this.test(marker)}} 
+                  onMouseOver={(e) => this.updateIcon(marker,e)} onMouseOut={(e) => this.defaultIcon(marker, e)}>
                     
                         {marker.title}
                     
 
                 </li> 
             )}
-        </ol> 
+
+        </ol>
+        </div> 
       </div>
     )
   }
