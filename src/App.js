@@ -31,8 +31,6 @@ class App extends Component {
     
   }
 
-  
-
   initMap = () => {
     const google = window.google || {};
     let bounds = new google.maps.LatLngBounds();
@@ -135,28 +133,29 @@ class App extends Component {
       }) 
       this.state.markers.push(marker);
       bounds.extend(marker.position)
-      
-      
       marker.addListener('click', () =>{
-        
         if(largeInfoWindow.marker !== marker) {
           largeInfoWindow.marker = marker;
           largeInfoWindow.setContent(`<div><strong>${marker.title.toUpperCase()}</strong></div> 
           <img src=${marker.icon}>
-          <div id="pano"></div>
           <div> ${marker.position} </div>`)
-          largeInfoWindow.addListener('closeclick', ()=>{
-            largeInfoWindow.marker=null
-          })
           largeInfoWindow.open(this.map, marker)
         }
-              
       })
     }
   
     this.setState({bounds: bounds})
     this.map.fitBounds(bounds)
-    
+    function populateInfoWindow(marker, infoWindow, map){
+      if (infoWindow.marker != marker) {
+          infoWindow.marker = marker;
+          infoWindow.setContent(`<div>${marker.title}\n ${marker.position} </div>`)
+          infoWindow.open(map, marker);
+          // infoWindow.addListener('closeclick', () =>
+          //     infoWindow.setMaker(null)
+          // )
+      }
+    }
   }
 
 
