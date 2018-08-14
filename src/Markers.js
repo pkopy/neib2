@@ -18,6 +18,7 @@ class Markers extends Component {
   // 
   updateIcon = (marker) => {
     marker.icon = marker.iconHigh
+    this.render()
     const google = window.google || {};
     let anim = google.maps.Animation.BOUNCE
     marker.setAnimation(anim)
@@ -25,16 +26,13 @@ class Markers extends Component {
   }
 
   test = (marker) => {
-    // console.log(marker)
     this.updateQuery(marker.title)
-    // marker.icon = this.state.icon;
   }
 
   defaultIcon = (marker) => {
-    // console.log(marker.icon)
     marker.icon = marker.iconDefault;
+    this.render()
     marker.setAnimation(null)
-    // this.setState({icon: ''})
     
   }
 
@@ -124,6 +122,7 @@ class Markers extends Component {
               type='text'
               placeholder='Search by bus, name or address'
               value={this.state.query}
+              tabIndex="1"
               onChange={(event) => {this.updateQuery(event.target.value);
                 
                 window.addEventListener('keydown', this.move)
@@ -144,9 +143,9 @@ class Markers extends Component {
           </div>
         </header>
 
-        {(query!=='')?(<ol tabIndex="-1" className="search-list">
+        <ol     className="search-list">
             {showingMarkers.map((marker) =>
-                <li key={marker.id} tabIndex="-1" className="search-item" 
+                <li key={marker.id} tabIndex={marker.id+1} className="search-item" 
                   onFocus={() => this.updateIcon(marker)} onBlur={() =>this.defaultIcon(marker)} onClick={() => {this.test(marker)}} 
                   onMouseOver={() => this.updateIcon(marker)} onMouseOut={() => this.defaultIcon(marker)}>
                     
@@ -155,7 +154,7 @@ class Markers extends Component {
 
                 </li> 
             )}
-        </ol>):''}
+        </ol> 
       </div>
     )
   }
