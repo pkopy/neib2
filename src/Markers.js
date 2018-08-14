@@ -18,7 +18,6 @@ class Markers extends Component {
   updateIcon = (marker, e) => {
     this.render()
     marker.icon = marker.iconHigh
-    console.log(e.target)
     e.target.className="search-item-hover"
     const google = window.google || {};
     let anim = google.maps.Animation.BOUNCE
@@ -48,13 +47,13 @@ class Markers extends Component {
     drawer.classList.toggle('open');
     // icon.classList.toggle('close')
     if(search.disabled) {
-      
+      // search.setAttribute('autofocus','')
       search.removeAttribute('disabled')
       search.placeholder='Search by bus, name or address'
     }else{
       search.value=''
       search.setAttribute('disabled','')
-      search.placeholder='Click to search'
+      search.placeholder=''
     }
     console.log(search.disabled)
   }

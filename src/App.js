@@ -31,12 +31,18 @@ class App extends Component {
     
   }
   infoWindow = (marker, largeInfoWindow) => {
+    let direction='';
+    if(marker.type==='bus stop') {
+      direction = `<div>Direction: ${marker.direction}</div>`
+    }
     marker.addListener('click', () =>{
       if(largeInfoWindow.marker !== marker) {
         largeInfoWindow.marker = marker;
-        largeInfoWindow.setContent(`<div><strong>${marker.title.toUpperCase()}</strong></div> 
+        
+        largeInfoWindow.setContent(`<div style="font-size: 1.2em"><strong>${marker.title.toUpperCase()}</strong></div> 
         <div><span>${marker.type.toUpperCase()}</span></div>
         <img src=${marker.icon}> 
+        ${direction}
         <div> ${marker.position} </div>`)
         largeInfoWindow.open(this.map, marker)
       }
@@ -141,6 +147,7 @@ class App extends Component {
         animation: google.maps.Animation.DROP,
         title:this.state.locations[i].title,
         type: this.state.locations[i].type,
+        direction: this.state.locations[i].direction,
         id: i,
         icon: this.state.locations[i].iconDefault,
         iconDefault: this.state.locations[i].iconDefault,

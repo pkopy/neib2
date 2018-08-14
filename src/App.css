@@ -52,7 +52,7 @@ button {
   color: #fff;
   font-weight: bold;
   font-size: 2em;
-  background-color: #80808040;
+  background-color: #2222228f;
   border-radius: 15px;
   width: 200px;
   padding: 10px;
@@ -92,8 +92,9 @@ button {
 }
 
 .refresh-icon:hover {
+  cursor: pointer;
   transform: rotate(-360deg);
-    transition: transform 1s;
+  transition: transform 1s;
 }
 .search-icon.close{
   background-image: url('./img/burger_menu.svg');

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        html,
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            height: 100%;
+            margin: 0;
+            padding: 0
+        }
+
+        #map {
+            bottom:0px;
+            height: 100%;
+            left: 362px;
+            position: absolute;
+            right: 0px;
+        }
+        .option-box {
+            background: #fff;
+            border: 1px solid #999;
+            border-radius: 3px;
+            height: 100%;
+            line-height: 35px;
+            padding: 10px 10px 30px 10px;
+            text-align: left;
+            width: 340px;
+        }
+        
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="option-box">
+            <h1>Find your Home</h1>
+            <div>
+                <input id="show-listing" type="button" value="Show Listing">
+                <input id="hide-listing" type="button" value="Hide Listing">
+
+            </div>
+
+        </div>
+        <div id="map"></div>
+    </div>
+    <script>
+        var map;
+        var markers =[];
+        // var invocation = new XMLHttpRequest();
+        // var url = 'https://en.wikipedia.org/api/rest_v1/page/';
+        
+        // function handleSuccess () { 
+        // console.log( 'this.responseText' ); 
+        // // the HTML of https://unsplash.com/
+        // }
+
+        // function callOtherDomain() {
+        //     if(invocation) {    
+        //         invocation.open('GET', url);
+        //         invocation.onload = console.log(this.responseText);
+        //         invocation.onerror = this.handleSuccess
+        //         // invocation.setRequestHeader('Authorization', 'pawelk');;
+        //         invocation.send(); 
+        //     }
+        // }
+
+        fetch('https://en.wikipedia.org/w/api.php?action=query&origin=*&titles=Jedlnia-Letnisko&prop=revisions&rvprop=content&format=json&formatversion=2')
+            .then((res) => res.json())
+            .then((data) => {
+                // let reg = /population_total = \d*/;
+                let reg = /\|+\s*\w+/g
+                // let myArray = reg.exec(data.query.pages[0].revisions[0].content)
+                let myArray = data.query.pages[0].revisions[0].content.match(reg)
+                let reg1 = /\d+/
+                console.log(myArray)
+            })
+
+        // callOtherDomain()
+        function test(string, reg) {
+
+        }
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat:51.434571, lng: 21.316791},
+                zoom: 13
+            })
+            // var pawel = {lat:51.434571, lng: 21.316791};
+            var locations = [
+                {title: 'Dom', location: {lat:51.434571, lng: 21.316791}},
+                {title: 'punkt1', location: {lat:51.431581, lng: 21.316791}},
+                {title: 'Dom2', location: {lat:51.432591, lng: 21.316791}},
+                {title: 'Dom3', location: {lat:51.435601, lng: 21.316791}},
+            ]
+            // var marker = new google.maps.Marker({
+            //     position: pawel,
+            //     map: map,
+            //     title: 'First Marker!'
+            // })
+            // var infoWindow = new google.maps.InfoWindow({
+            //     content: 'Takie tam pierdoły ho hoho '
+            // })
+            // marker.addListener('click', () =>
+            //     infoWindow.open(map, marker)
+            // )
+
+            var largeInfoWindow = new google.maps.InfoWindow()
+            var bounds = new google.maps.LatLngBounds();
+            for(let i = 0; i < locations.length; i++) {
+                let position = locations[i].location;
+                let title = locations[i].title;
+                let marker = new google.maps.Marker({
+                    position: position,
+                    title: title,
+                    // map: map,
+                    animation: google.maps.Animation.DROP,
+                    id: i
+                });
+                markers.push(marker);
+                // bounds.extend(marker.position)
+                marker.addListener('click', function(){
+                    populateInfoWindow(this, largeInfoWindow)
+                })
+            }
+            
+        
+            
+
+            function populateInfoWindow(marker, infoWindow) {
+                if (infoWindow.marker != marker) {
+                    infoWindow.marker = marker;
+                    infoWindow.setContent('<div>' + marker.title +  marker.position+ '</div>')
+                    infoWindow.open(map, marker);
+                    // infoWindow.addListener('closeclick', () =>
+                    //     infoWindow.setMaker(null)
+                    // )
+                }
+            }
+
+            document.getElementById('show-listing').addEventListener('click', showListing);
+            document.getElementById('hide-listing').addEventListener('click', hideListing);
+
+            function showListing () {
+                for(let i =0; i < markers.length; i++){
+                    markers[i].setMap(map);
+                    bounds.extend(markers[i].position)
+                }
+                map.fitBounds(bounds)
+            }
+
+            function hideListing () {
+                for(let i = 0; i < markers.length; i++){
+                    markers[i].setMap(null)
+                }
+            }
+
+        }
+    </script>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxMhKai2omF-2VhJWnO1VCaoz2n8fLMrs&v=3&callback=initMap">
+    </script>
+    
+</body>
+</html>
