@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import InfoWindow from './InfoWindow'
+import NoNetwork from './NoNetwork'
 
 class Markers extends Component {
   
   state = {
     query:'',
     icon:'',  
+    
   }
 
   updateQuery = (query) =>{
@@ -99,8 +101,8 @@ class Markers extends Component {
   
 
   render () {
-    const { markers, map, info, setInfo, markerInfo } = this.props;
-    const { query } = this.state;
+    const { markers, map, info, setInfo, markerInfo, network } = this.props;
+    const { query, width } = this.state;
 
     let showingMarkers
         if(query){
@@ -117,8 +119,8 @@ class Markers extends Component {
 
     
     const google = window.google || {};
-    let bounds = new google.maps.LatLngBounds();
-    let largeInfoWindow = new google.maps.InfoWindow()
+    // let bounds = new google.maps.LatLngBounds();
+    // let largeInfoWindow = new google.maps.InfoWindow()
    
     for(let marker of markers) {
       marker.setMap(null)
@@ -127,8 +129,8 @@ class Markers extends Component {
 
     for(let marker of showingMarkers) {
       marker.setMap(map);
-      bounds.extend(marker.position);
-      map.fitBounds(bounds)
+      // bounds.extend(marker.position);
+      // map.fitBounds(bounds)
       // map.setCenter()
       // console.log(marker)
       
@@ -187,10 +189,12 @@ class Markers extends Component {
           </ol>
         </div> 
         <InfoWindow 
+          hideMenu={this.hideMenu}
           markerInfo={markerInfo}
           info={info}
           setInfo={setInfo}
         />
+        {network?'':(<NoNetwork />)}
       </div>
     )
   }
