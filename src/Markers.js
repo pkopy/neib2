@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import iconBurger from './img/burger_menu.svg'
-import iconChurchHigh from './img/church-green.svg'
+import { Link } from 'react-router-dom'
+import InfoWindow from './InfoWindow'
 
 class Markers extends Component {
   
   state = {
     query:'',
-    icon:'',
-    
+    icon:'',  
   }
 
   updateQuery = (query) =>{
@@ -27,8 +26,7 @@ class Markers extends Component {
 
   test = (marker) => {
     this.updateQuery(marker.title)
-    this.props.map.click
-    // this.render()
+    
   }
 
   defaultIcon = (marker, e) => {
@@ -55,7 +53,7 @@ class Markers extends Component {
       search.setAttribute('disabled','')
       search.placeholder=''
     }
-    console.log(search.disabled)
+    // console.log(search.disabled)
   }
 
   // move = (e) => {
@@ -101,7 +99,7 @@ class Markers extends Component {
   
 
   render () {
-    const { markers, map, infoWindow } = this.props;
+    const { markers, map, info, setInfo, markerInfo } = this.props;
     const { query } = this.state;
 
     let showingMarkers
@@ -124,14 +122,16 @@ class Markers extends Component {
    
     for(let marker of markers) {
       marker.setMap(null)
+      // infoWindow(marker, largeInfoWindow)
     }
 
     for(let marker of showingMarkers) {
-      
       marker.setMap(map);
       bounds.extend(marker.position);
       map.fitBounds(bounds)
       // map.setCenter()
+      // console.log(marker)
+      
       
     }
     
@@ -176,20 +176,21 @@ class Markers extends Component {
           </div>
         </header>
         <div className="nav open">
-        <ol     className="search-list">
+          <ol className="search-list">
             {showingMarkers.map((marker) =>
                 <li key={marker.id} tabIndex={marker.id+1} className="search-item" 
                   onFocus={(e) => {this.updateIcon(marker,e)}} onBlur={(e) =>this.defaultIcon(marker, e)} onClick={() => {this.test(marker)}} 
                   onMouseOver={(e) => this.updateIcon(marker,e)} onMouseOut={(e) => this.defaultIcon(marker, e)}>
-                    
-                        {marker.title}
-                    
-
+                    {marker.title}
                 </li> 
             )}
-
-        </ol>
+          </ol>
         </div> 
+        <InfoWindow 
+          markerInfo={markerInfo}
+          info={info}
+          setInfo={setInfo}
+        />
       </div>
     )
   }

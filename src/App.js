@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
+import {Route} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './App.css';
 import Weather from './Weather'
 import Markers from './Markers'
-import iconChurchHigh from './img/church-green.svg'
+
 
 class App extends Component {
   state={
     map:'',
     markers:[],
-    locations: []
-      
+    locations: [],
+    info: false,
+    markerInfo:''
   }
 
   componentDidMount () {
@@ -20,7 +23,7 @@ class App extends Component {
     fetch('http://46.41.150.120:5001/locations', {
         headers: {
           'Accept': 'application/json',
-          'Authorization':token
+          'Authorization': token
         }
      })
       .then(res => res.json())
@@ -30,9 +33,12 @@ class App extends Component {
       })
     
   }
+  setInfo = () => {
+    this.setState({info:false})
+  }
   infoWindow = (marker, largeInfoWindow) => {
     let direction='';
-    if(marker.type==='bus stop') {
+    if(marker.type === 'bus stop') {
       direction = `<div>Direction: ${marker.direction}</div>`
     }
     marker.addListener('click', () =>{
@@ -43,12 +49,18 @@ class App extends Component {
         <div><span>${marker.type.toUpperCase()}</span></div>
         <img src=${marker.icon}> 
         ${direction}
+        <div class="more">TEST</dive>
         <div> ${marker.position} </div>`)
         largeInfoWindow.open(this.map, marker)
+        document.querySelector('.more').addEventListener('click', ()=>{this.setState({info: true, markerInfo: marker}); console.log(marker)})
       }
     })
     largeInfoWindow.addListener('closeclick', ()=>{
       largeInfoWindow.marker=null
+    })
+
+    largeInfoWindow.addListener('click', () => {
+      console.log('xxx')
     })
   }
 
@@ -171,14 +183,20 @@ class App extends Component {
     return (
       <div className="App">
         <div id="map"></div>
-        <Markers
-          
-          markers={this.state.markers}
-          map={this.state.map}
-        />
+        <Route  path='/' render={() => (
+          <Markers
+            setInfo={this.setInfo}
+            info={this.state.info}
+            markerInfo={this.state.markerInfo}
+            markers={this.state.markers}
+            map={this.state.map}
+          />
+
+        )} />
         <Weather 
           city={'jedlnia-letnisko'}
         />
+        
       </div>
     );
   }
