@@ -16,6 +16,8 @@ class App extends Component {
     info: false,
     markerInfo:'',
     network: true,
+    photoChurch: '',
+    church:''
   }
 
   componentDidMount () {
@@ -32,22 +34,31 @@ class App extends Component {
       .then(res => res.json())
       .then(data=>{
         this.setState({locations:data.locations})
-        
+        let church = this.state.locations.filter((location) => location.type==='church')
+        this.setState({church:church})
+          
         this.initMap()  
         
       }).catch(()=>{
-        this.setState({locations: [
-          {type: 'bus stop', title:'Radomska 60', location: {lat:51.432822, lng:21.320922}, direction:'Radom'},
-          {type: 'bus stop', title:'Radomska 69', location: {lat:51.432921, lng:21.318971}, direction:'Jedlnia-Letnisko'},
-          {type: 'bus stop', title:'Siczki', location: {lat:51.437613, lng:21.30547}, direction:'Radom'},
-          {type: 'bus stop', title:'Radomska 32', location: {lat:51.432071, lng:21.326588}, direction:'Radom'},
-          {type: 'bus stop', title:'Piłsudski Square', location: {lat:51.430069, lng:21.327622}, direction:'Radom'},
-          {type:'place', title:'Pawel`s home', location: {lat:51.434571, lng: 21.316791}},
-          {type:'place', title:'Monument to the victims of the Nazi occupation', location: {lat:51.430406, lng: 21.32743}},
-          {type:'place', title:'Church of St Joseph', location: {lat:51.434173, lng: 21.327767}},
-        ]});
         this.setState({network:false})
       })
+
+      // Fetch data from Wiki API
+
+      fetch('https://pl.wikipedia.org/w/api.php?action=query&origin=*&titles=Jedlnia-Letnisko&prop=info|description|pageimages&format=json&formatversion=2&inprop=url&descprefersource=local&piprop=original')
+      .then((res) => res.json())
+      .then((data) => {
+          let photo = {src: data.query.pages[0].original.source }
+          // let church = this.state.locations.filter((location) => location.type==='church')
+          
+          // console.log(church)
+          this.setState({photoChurch:photo})
+          console.log(this.state.photoChurch)
+          
+
+      })
+
+      
     
   }
 
@@ -73,7 +84,7 @@ class App extends Component {
         <div class="more">TEST</dive>
         <div> ${marker.position} </div>`)
         largeInfoWindow.open(this.map, marker)
-        document.querySelector('.more').addEventListener('click', ()=>{this.setState({info: true, markerInfo: marker}); console.log(marker)})
+        document.querySelector('.more').addEventListener('click', ()=>{this.setState({info: true, markerInfo: marker}); largeInfoWindow.close();largeInfoWindow.marker=null; console.log(marker)})
       }
     })
     largeInfoWindow.addListener('closeclick', ()=>{
@@ -87,6 +98,8 @@ class App extends Component {
 
   initMap = () => {
     const google = window.google || {};
+    this.state.church[0].photo = this.state.photoChurch
+    console.log(this.state.church)
     let bounds = new google.maps.LatLngBounds();
     let largeInfoWindow = new google.maps.InfoWindow()
     let styledMap = new google.maps.StyledMapType(
@@ -174,7 +187,7 @@ class App extends Component {
     // this.state.map.addListener('click', ()=> console.log('xx'))
     
     for(let i = 0; i < this.state.locations.length; i++){
-            
+      
       let marker = new google.maps.Marker({
         position: this.state.locations[i].location,
         animation: google.maps.Animation.DROP,
@@ -185,6 +198,8 @@ class App extends Component {
         icon: this.state.locations[i].iconDefault,
         iconDefault: this.state.locations[i].iconDefault,
         iconHigh: this.state.locations[i].iconHigh,
+        photo: this.state.locations[i].photo,
+        timetable: this.state.locations[i].timetable,
       }) 
       this.state.markers.push(marker);
       bounds.extend(marker.position)
@@ -212,6 +227,7 @@ class App extends Component {
             markers={this.state.markers}
             map={this.state.map}
             network={this.state.network}
+            photoChurch={this.state.photoChurch}
           />
 
         )} />

@@ -77,7 +77,7 @@ button {
   display: flex;
 }
 .search-icon {
-  background-image: url('./img/burger_menu.svg');
+  background-image: url('./img/arrow.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 1.2em;
@@ -100,7 +100,9 @@ button {
   transition: transform 1s;
 }
 .search-icon.close{
-  background-image: url('./img/burger_menu.svg');
+  /* background-image: url('./img/burger_menu.svg'); */
+  -webkit-transform: rotateY(180deg); 
+  transform: rotateY(180deg); 
 }
 .search-places {
   width: 100%;
@@ -154,14 +156,62 @@ button {
   border-right: 1px solid;
   width: 120px;
 }
+
+/* ====== Info Window ====== */
 .desc{
   position: absolute;
   background: #000000c4;
   color: #fff;
   /* width: 40%; */
   /* height: 60%; */
-  border: 3px solid cornflowerblue;
+  border: 3px solid #3390dcd4;
   border-radius: 10px;
+  box-shadow: 3px 3px 8px 0px #3a2c2c;
+
+}
+
+.close-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
+  border: 3px solid #3390dcd4;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-image: url('./img/close_button.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1em;
+}
+
+.close-button:hover {
+  cursor: pointer;
+}
+.desc .title {
+  padding: 30px 0 0;
+}
+
+.desc h2, h4{
+  margin: .2em;
+}
+
+.timetable {
+  padding: 10px;
+}
+.timetable  table, td{
+  padding: 7px;
+  border: 1px solid #fff;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto
+}
+
+.desc img {
+  border: 3px solid #3390dcd4;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px 0px #8c8686;
+  margin: 5px;
+  width: 300px;
 }
 
 @media only screen and (max-width: 450px) {
@@ -173,5 +223,11 @@ button {
     position: absolute;
     right: 1em;
     display: block
+  }
+  .photo {
+    display: none;
+  }
+  .desc {
+    font-size: smaller;
   }
 }

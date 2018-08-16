@@ -45,15 +45,15 @@ class Markers extends Component {
     let search = document.querySelector('.search-places')
     let icon = document.querySelector('.search-icon')
     drawer.classList.toggle('open');
-    // icon.classList.toggle('close')
+    icon.classList.toggle('close')
     if(search.disabled) {
       // search.setAttribute('autofocus','')
       search.removeAttribute('disabled')
-      search.placeholder='Search by bus, name or address'
+      search.placeholder='Search by type or address'
     }else{
       search.value=''
       search.setAttribute('disabled','')
-      search.placeholder=''
+      // search.placeholder=''
     }
     // console.log(search.disabled)
   }
@@ -101,8 +101,8 @@ class Markers extends Component {
   
 
   render () {
-    const { markers, map, info, setInfo, markerInfo, network } = this.props;
-    const { query, width } = this.state;
+    const { markers, map, info, setInfo, markerInfo, network, photoChurch } = this.props;
+    const { query } = this.state;
 
     let showingMarkers
         if(query){
@@ -119,7 +119,7 @@ class Markers extends Component {
 
     
     const google = window.google || {};
-    // let bounds = new google.maps.LatLngBounds();
+    let bounds = new google.maps.LatLngBounds();
     // let largeInfoWindow = new google.maps.InfoWindow()
    
     for(let marker of markers) {
@@ -129,8 +129,8 @@ class Markers extends Component {
 
     for(let marker of showingMarkers) {
       marker.setMap(map);
-      // bounds.extend(marker.position);
-      // map.fitBounds(bounds)
+      bounds.extend(marker.position);
+      map.fitBounds(bounds)
       // map.setCenter()
       // console.log(marker)
       
@@ -147,7 +147,7 @@ class Markers extends Component {
             <input
               className='search-places'
               type='text'
-              placeholder='Search by bus, name or address'
+              placeholder='Search by type or address'
               value={this.state.query}
               tabIndex="1"
               onChange={(event) => {this.updateQuery(event.target.value);
@@ -193,6 +193,7 @@ class Markers extends Component {
           markerInfo={markerInfo}
           info={info}
           setInfo={setInfo}
+          photoChurch={photoChurch}
         />
         {network?'':(<NoNetwork />)}
       </div>
