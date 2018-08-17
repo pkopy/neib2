@@ -1,11 +1,12 @@
 # Project Overview
 
 This project shows my neighbornhood on the google maps. In this project i used the fallowing API:
-[Openweathermap](https://openweathermap.org/),
-[Wikipedia](https://www.mediawiki.org/wiki/API:Main_page),
-and my own API based by Udacity server "reactnd-contacts-server"
+- [Openweathermap](https://openweathermap.org/),
+- [Wikipedia](https://www.mediawiki.org/wiki/API:Main_page),
+- and my own API based by Udacity server "reactnd-contacts-server"
+- Icons powered by [iconmonstr](https://iconmonstr.com/) and google icons
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-Icons powered by [iconmonstr](https://iconmonstr.com/) and google icons
 
 
 ## Install
