@@ -178,6 +178,7 @@ class App extends Component {
       center: {lat:51.434571, lng: 21.316791},
       zoom: 15,
       mapTypeControl: false,
+      streetViewControl: false
     })  
 
     this.map.mapTypes.set('styled_map', styledMap);
