@@ -156,6 +156,11 @@ button {
   border-right: 1px solid;
   width: 120px;
 }
+.problem {
+  font-size: 4em;
+  position: absolute;
+  top: 300px;
+}
 
 /* ====== Info Window ====== */
 .desc{
@@ -186,6 +191,7 @@ button {
 
 .close-button:hover {
   cursor: pointer;
+  background-image: url('./img/close_button_highLight.svg');
 }
 .desc .title {
   padding: 30px 0 0;
@@ -214,6 +220,23 @@ button {
   width: 300px;
 }
 
+.desc p {
+  
+  padding: 0 15px;
+  text-align: justify;
+
+}
+.desc a:link, a:visited {
+  color: #fff;
+  text-decoration: none;
+}
+
+.more {
+  cursor: pointer;
+  padding: 5px;
+  font-weight: bold;
+}
+
 @media only screen and (max-width: 450px) {
   .weather {
     display: none;
@@ -229,5 +252,8 @@ button {
   }
   .desc {
     font-size: smaller;
+  }
+  .problem {
+    top: 200px;
   }
 }

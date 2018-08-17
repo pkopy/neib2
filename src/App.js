@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {Route} from 'react-router-dom'
-import { Link } from 'react-router-dom'
 import './App.css';
 import Weather from './Weather'
 import Markers from './Markers'
@@ -16,8 +15,7 @@ class App extends Component {
     info: false,
     markerInfo:'',
     network: true,
-    photoChurch: '',
-    church:''
+    
   }
 
   componentDidMount () {
@@ -34,32 +32,31 @@ class App extends Component {
       .then(res => res.json())
       .then(data=>{
         this.setState({locations:data.locations})
-        let church = this.state.locations.filter((location) => location.type==='church')
-        this.setState({church:church})
+        return data.locations
           
-        this.initMap()  
+      // Fetch data from Wiki API  
+      }).then((data) => fetch('https://pl.wikipedia.org/w/api.php?action=query&origin=*&titles=Kościół_św._Józefa_w_Jedlni-Letnisko&prop=info|description|pageimages|cirrusdoc&format=json&formatversion=2&inprop=url&descprefersource=local&piprop=original')
+      .then((res) => res.json())
+      .then((info) => {
+          let photo = {src: info.query.pages[0].original.source }
+          let desc = info.query.pages[0].cirrusdoc[0].source.opening_text
+          let link = info.query.pages[0].canonicalurl
+          data.map((location) => {
+            if(location.type ==='church') {
+              location.photo = photo;
+              location.description = desc
+              location.url = link
+            }
+          
+          })
         
-      }).catch(()=>{
+          this.initMap()
+          
+      }) )
+      .catch((err)=>{
         this.setState({network:false})
       })
-
-      // Fetch data from Wiki API
-
-      fetch('https://pl.wikipedia.org/w/api.php?action=query&origin=*&titles=Jedlnia-Letnisko&prop=info|description|pageimages&format=json&formatversion=2&inprop=url&descprefersource=local&piprop=original')
-      .then((res) => res.json())
-      .then((data) => {
-          let photo = {src: data.query.pages[0].original.source }
-          // let church = this.state.locations.filter((location) => location.type==='church')
-          
-          // console.log(church)
-          this.setState({photoChurch:photo})
-          console.log(this.state.photoChurch)
-          
-
-      })
-
-      
-    
+ 
   }
 
   
@@ -81,25 +78,28 @@ class App extends Component {
         <div><span>${marker.type.toUpperCase()}</span></div>
         <img src=${marker.icon}> 
         ${direction}
-        <div class="more">TEST</dive>
-        <div> ${marker.position} </div>`)
+        <div class="more">More information...</div>
+        `)
         largeInfoWindow.open(this.map, marker)
-        document.querySelector('.more').addEventListener('click', ()=>{this.setState({info: true, markerInfo: marker}); largeInfoWindow.close();largeInfoWindow.marker=null; console.log(marker)})
+        document.querySelector('.more').addEventListener('click', ()=>{
+          this.setState({info: true, markerInfo: marker}); 
+          largeInfoWindow.close();
+          largeInfoWindow.marker=null;
+          for(let marker of this.state.markers){
+            marker.setMap(null)
+          }
+        })
       }
     })
     largeInfoWindow.addListener('closeclick', ()=>{
       largeInfoWindow.marker=null
     })
 
-    largeInfoWindow.addListener('click', () => {
-      console.log('xxx')
-    })
+    
   }
 
   initMap = () => {
     const google = window.google || {};
-    this.state.church[0].photo = this.state.photoChurch
-    console.log(this.state.church)
     let bounds = new google.maps.LatLngBounds();
     let largeInfoWindow = new google.maps.InfoWindow()
     let styledMap = new google.maps.StyledMapType(
@@ -182,9 +182,7 @@ class App extends Component {
 
     this.map.mapTypes.set('styled_map', styledMap);
     this.map.setMapTypeId('styled_map');
-  
     this.setState({map: this.map})
-    // this.state.map.addListener('click', ()=> console.log('xx'))
     
     for(let i = 0; i < this.state.locations.length; i++){
       
@@ -200,6 +198,8 @@ class App extends Component {
         iconHigh: this.state.locations[i].iconHigh,
         photo: this.state.locations[i].photo,
         timetable: this.state.locations[i].timetable,
+        description: this.state.locations[i].description,
+        url: this.state.locations[i].url,
       }) 
       this.state.markers.push(marker);
       bounds.extend(marker.position)

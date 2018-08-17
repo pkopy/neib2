@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import InfoWindow from './InfoWindow'
 import NoNetwork from './NoNetwork'
 
@@ -15,7 +14,6 @@ class Markers extends Component {
     this.setState({query: query})
   }
 
-  // 
   updateIcon = (marker, e) => {
     this.render()
     marker.icon = marker.iconHigh
@@ -28,7 +26,6 @@ class Markers extends Component {
 
   test = (marker) => {
     this.updateQuery(marker.title)
-    
   }
 
   defaultIcon = (marker, e) => {
@@ -36,8 +33,7 @@ class Markers extends Component {
     e.target.className="search-item"
     e.target.blur()
     marker.setAnimation(null)
-    this.render()
-    
+    this.render() 
   }
 
   hideMenu = () => {
@@ -46,59 +42,17 @@ class Markers extends Component {
     let icon = document.querySelector('.search-icon')
     drawer.classList.toggle('open');
     icon.classList.toggle('close')
-    if(search.disabled) {
-      // search.setAttribute('autofocus','')
+    if (search.disabled) {
       search.removeAttribute('disabled')
       search.placeholder='Search by type or address'
-    }else{
+    } else {
       search.value=''
       search.setAttribute('disabled','')
-      // search.placeholder=''
     }
-    // console.log(search.disabled)
+
   }
 
-  // move = (e) => {
-  //   let array = document.querySelectorAll('li')
-  //   let count = this.state.count;
-  //   console.log(count)
-  
-  //   for(let elem of array){
-  //     elem.className = "search-item"
-  //   }
-    
-  //   if(count === array.length-1) {
-  //     count = -1; this.setState({count:count})
-  //   }
-    
-    
-      
-  //   if(e.keyCode === 40 && array.length > 0) {
-  //     count++;
-      
-  //     console.log(count)
-  //     array[count].focus()
-  //     array[count].className="search-item-hover"
-     
-  //     this.setState({count:count})
-  //   }
-  //   if(e.keyCode === 38 && array.length > 0) {
-  //     if(count === -1){
-  //       count = array.length-1
-  //     }else if(count === 0) {
-  //       count = array.length
-  //     }
-  //     count--;
-  //     // console.log(count)
-  //     array[count].focus()
-  //     array[count].className="search-item-hover"
-     
-  //     this.setState({count:count})
-  //   }
-  
-  // }
-
-  
+ 
 
   render () {
     const { markers, map, info, setInfo, markerInfo, network, photoChurch } = this.props;
@@ -112,29 +66,19 @@ class Markers extends Component {
             showingMarkers = markers;
         }
 
-        
-    // for(let marker of showingMarkers){
-    //     marker.setMap(map)
-    // }
-
-    
     const google = window.google || {};
     let bounds = new google.maps.LatLngBounds();
-    // let largeInfoWindow = new google.maps.InfoWindow()
+    
    
     for(let marker of markers) {
       marker.setMap(null)
-      // infoWindow(marker, largeInfoWindow)
+      
     }
 
     for(let marker of showingMarkers) {
       marker.setMap(map);
       bounds.extend(marker.position);
-      map.fitBounds(bounds)
-      // map.setCenter()
-      // console.log(marker)
-      
-      
+      map.fitBounds(bounds) 
     }
     
   
@@ -151,9 +95,7 @@ class Markers extends Component {
               value={this.state.query}
               tabIndex="1"
               onChange={(event) => {this.updateQuery(event.target.value);
-                
-                // window.addEventListener('keydown', this.move)
-              
+
               }
                 
               }
@@ -163,10 +105,7 @@ class Markers extends Component {
                   this.updateQuery(e.target.value)
                   this.hideMenu()
                 }
-                // this.updateQuery(e.target.value)
-
-                // window.removeEventListener('keydown', this.move)
-                
+ 
               }}
               
               
