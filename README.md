@@ -25,3 +25,7 @@ In this project source files are in src directory. When you do some change in th
 ## Build  
 
 To prepare production version type npm run build
+
+## Demo
+
+Ther is a demo my app [Jedlnia-Letnisko Neighbornhood](http://46.41.150.120:5000/)
