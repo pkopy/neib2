@@ -28,4 +28,4 @@ To prepare production version type npm run build
 
 ## Demo
 
-Ther is a demo my app [Jedlnia-Letnisko Neighbornhood](http://46.41.150.120:5000/)
+There is a demo my app [Jedlnia-Letnisko Neighbornhood](http://46.41.150.120:5000/)
