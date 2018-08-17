@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import escapeRegExp from 'escape-string-regexp'
 import InfoWindow from './InfoWindow'
 import NoNetwork from './NoNetwork'
 
@@ -60,7 +61,7 @@ class Markers extends Component {
 
     let showingMarkers
         if(query){
-            const match = new RegExp(this.state.query, 'i')
+            const match = new RegExp(escapeRegExp(this.state.query), 'i')
             showingMarkers = markers.filter((marker) => match.test(marker.title) || match.test(marker.type) )
         }else{
             showingMarkers = markers;
