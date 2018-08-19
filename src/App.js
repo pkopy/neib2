@@ -3,6 +3,7 @@ import {Route} from 'react-router-dom'
 import './App.css';
 import Weather from './Weather'
 import Markers from './Markers'
+import styles from './stylesMap'
 
 
 
@@ -110,77 +111,7 @@ class App extends Component {
     google.maps = google.maps || {};
     let bounds = new google.maps.LatLngBounds();
     let largeInfoWindow = new google.maps.InfoWindow()
-    let styledMap = new google.maps.StyledMapType(
-      [
-        {
-          "featureType": "poi.business",
-          "stylers": [
-            {
-              "visibility": "off"
-            }
-          ]
-        },
-        {
-          "featureType": "poi.government",
-          "stylers": [
-            {
-              "visibility": "off"
-            }
-          ]
-        },
-        {
-          "featureType": "poi.medical",
-          "stylers": [
-            {
-              "visibility": "off"
-            }
-          ]
-        },
-        {
-          "featureType": "poi.medical",
-          "elementType": "geometry.fill",
-          "stylers": [
-            {
-              "visibility": "off"
-            }
-          ]
-        },
-        {
-          "featureType": "poi.medical",
-          "elementType": "geometry.stroke",
-          "stylers": [
-            {
-              "visibility": "off"
-            }
-          ]
-        },
-        {
-          "featureType": "poi.medical",
-          "elementType": "labels.text",
-          "stylers": [
-            {
-              "visibility": "off"
-            }
-          ]
-        },
-        {
-          "featureType": "poi.place_of_worship",
-          "stylers": [
-            {
-              "visibility": "off"
-            }
-          ]
-        },
-        {
-          "featureType": "poi.school",
-          "stylers": [
-            {
-              "visibility": "off"
-            }
-          ]
-        }
-      ]  
-    )
+    let styledMap = new google.maps.StyledMapType(styles)
     
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: {lat:51.434571, lng: 21.316791},
