@@ -38,24 +38,20 @@ class Markers extends Component {
       largeInfoWindow.marker = marker;
       
       largeInfoWindow.setContent(`<div style="font-size: 1.2em"><strong>${marker.title.toUpperCase()}</strong></div> 
-      <div><span>${marker.type.toUpperCase()}</span></div>
-      <img src=${marker.icon}> 
-      ${direction}
-      <div class="more">More information...</div>
-      `)
+        <div><span>${marker.type.toUpperCase()}</span></div>
+        <img src=${marker.icon}> 
+        ${direction}
+        <div class="more">More information...</div>`
+      )
       this.props.setMarkerInfo(marker)
       largeInfoWindow.open(this.map, marker)
-      document.querySelector('.more').addEventListener('click', ()=>{
-       
+      
+      document.querySelector('.more').addEventListener('click', ()=>{ 
         this.props.setInfoTrue()
         largeInfoWindow.close();
-        largeInfoWindow.marker=null;
-       
-      })
-
-      
-    }
-    
+        largeInfoWindow.marker=null; 
+      })  
+    }    
     marker.largeInfoWindow.open(this.props.map, marker)
   }
 
@@ -90,27 +86,26 @@ class Markers extends Component {
     const { query } = this.state;
 
     let showingMarkers
-        if(query){
-            const match = new RegExp(escapeRegExp(this.state.query), 'i')
-            showingMarkers = markers.filter((marker) => match.test(marker.title) || match.test(marker.type) )
-        }else{
-            showingMarkers = markers;
-        }
-
-        const google = window.google || {};
-        google.maps = google.maps || {};
-    let bounds = new google.maps.LatLngBounds();
-    
-   
-    for(let marker of markers) {
-      marker.setMap(null)
-      
+    if(query){
+        const match = new RegExp(escapeRegExp(this.state.query), 'i')
+        showingMarkers = markers.filter((marker) => match.test(marker.title) || match.test(marker.type) )
+    }else{
+        showingMarkers = markers;
     }
 
-    for(let marker of showingMarkers) {
-      marker.setMap(map);
-      bounds.extend(marker.position);
-      map.fitBounds(bounds) 
+    const google = window.google;
+        
+    if(google){
+      let bounds = new google.maps.LatLngBounds();
+      for(let marker of markers) {
+        marker.setMap(null)
+      }
+
+      for(let marker of showingMarkers) {
+        marker.setMap(map);
+        bounds.extend(marker.position);
+        map.fitBounds(bounds) 
+      }
     }
     
   

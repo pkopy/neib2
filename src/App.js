@@ -108,7 +108,6 @@ class App extends Component {
 
   initMap = () => {
     const google = window.google || {};
-    google.maps = google.maps || {};
     let bounds = new google.maps.LatLngBounds();
     let largeInfoWindow = new google.maps.InfoWindow()
     let styledMap = new google.maps.StyledMapType(styles)
