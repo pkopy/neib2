@@ -15,7 +15,7 @@ class App extends Component {
     info: false,
     markerInfo:'',
     network: true,
-    google: window.google,
+    
   }
 
   componentDidMount () {
@@ -101,7 +101,8 @@ class App extends Component {
   }
 
   initMap = () => {
-    const google = this.state.google
+    const google = window.google || {};
+    google.maps = google.maps || {};
     let bounds = new google.maps.LatLngBounds();
     let largeInfoWindow = new google.maps.InfoWindow()
     let styledMap = new google.maps.StyledMapType(
