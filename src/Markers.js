@@ -27,6 +27,8 @@ class Markers extends Component {
 
   test = (marker) => {
     this.updateQuery(marker.title)
+    this.props.infoWindow(marker, marker.largeInfoWindow)
+    marker.largeInfoWindow.open(this.props.map, marker)
   }
 
   defaultIcon = (marker, e) => {
@@ -56,7 +58,7 @@ class Markers extends Component {
  
 
   render () {
-    const { markers, map, info, setInfo, markerInfo, network, photoChurch } = this.props;
+    const { markers, map, info, setInfo, markerInfo, network, photoChurch, google } = this.props;
     const { query } = this.state;
 
     let showingMarkers
@@ -67,7 +69,7 @@ class Markers extends Component {
             showingMarkers = markers;
         }
 
-    const google = window.google || {};
+    
     let bounds = new google.maps.LatLngBounds();
     
    

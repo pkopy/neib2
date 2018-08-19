@@ -15,7 +15,7 @@ class App extends Component {
     info: false,
     markerInfo:'',
     network: true,
-    
+    google: window.google,
   }
 
   componentDidMount () {
@@ -89,6 +89,8 @@ class App extends Component {
             marker.setMap(null)
           }
         })
+
+        
       }
     })
     largeInfoWindow.addListener('closeclick', ()=>{
@@ -99,7 +101,7 @@ class App extends Component {
   }
 
   initMap = () => {
-    const google = window.google || {};
+    const google = this.state.google
     let bounds = new google.maps.LatLngBounds();
     let largeInfoWindow = new google.maps.InfoWindow()
     let styledMap = new google.maps.StyledMapType(
@@ -186,7 +188,6 @@ class App extends Component {
     this.setState({map: this.map})
     
     for(let i = 0; i < this.state.locations.length; i++){
-      
       let marker = new google.maps.Marker({
         position: this.state.locations[i].location,
         animation: google.maps.Animation.DROP,
@@ -201,10 +202,13 @@ class App extends Component {
         timetable: this.state.locations[i].timetable,
         description: this.state.locations[i].description,
         url: this.state.locations[i].url,
+        largeInfoWindow: largeInfoWindow
       }) 
-      this.state.markers.push(marker);
+      
+      this.state.markers.push(marker)
       bounds.extend(marker.position)
       this.infoWindow(marker, largeInfoWindow)
+     
     }
   
     this.setState({bounds: bounds})
@@ -229,6 +233,8 @@ class App extends Component {
             map={this.state.map}
             network={this.state.network}
             photoChurch={this.state.photoChurch}
+            google={this.state.google}
+            infoWindow={this.infoWindow}
           />
 
         )} />
