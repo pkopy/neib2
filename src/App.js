@@ -58,8 +58,13 @@ class App extends Component {
       })
  
   }
+  setMarkerInfo = (marker) =>{
+    this.setState({markerInfo: marker})
+  }
 
-  
+  setInfoTrue = () => {
+    this.setState({info:true})
+  }
 
   setInfo = () => {
     this.setState({info:false})
@@ -228,8 +233,10 @@ class App extends Component {
         <Route exact path='/' render={() => (
           <Markers
             setInfo={this.setInfo}
+            setInfoTrue={this.setInfoTrue}
             info={this.state.info}
             markerInfo={this.state.markerInfo}
+            setMarkerInfo={this.setMarkerInfo}
             markers={this.state.markers}
             map={this.state.map}
             network={this.state.network}

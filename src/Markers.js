@@ -27,7 +27,35 @@ class Markers extends Component {
 
   test = (marker) => {
     this.updateQuery(marker.title)
-    // this.props.infoWindow(marker, marker.largeInfoWindow)
+    
+    
+    let largeInfoWindow = marker.largeInfoWindow
+    let direction='';
+    if(marker.type === 'bus stop') {
+      direction = `<div>Direction: ${marker.direction}</div>`
+    }
+    if(largeInfoWindow.marker !== marker) {
+      largeInfoWindow.marker = marker;
+      
+      largeInfoWindow.setContent(`<div style="font-size: 1.2em"><strong>${marker.title.toUpperCase()}</strong></div> 
+      <div><span>${marker.type.toUpperCase()}</span></div>
+      <img src=${marker.icon}> 
+      ${direction}
+      <div class="more">More information...</div>
+      `)
+      this.props.setMarkerInfo(marker)
+      largeInfoWindow.open(this.map, marker)
+      document.querySelector('.more').addEventListener('click', ()=>{
+       
+        this.props.setInfoTrue()
+        largeInfoWindow.close();
+        largeInfoWindow.marker=null;
+       
+      })
+
+      
+    }
+    
     marker.largeInfoWindow.open(this.props.map, marker)
   }
 
