@@ -39,7 +39,7 @@ class InfoWindow extends Component {
             <div>
                 
                 {info?
-                    <div className="desc"  onLoad={this.onLoadFunc()} style={{width: width + 'px', height: height +'px',left: windowWidth/2 - width/2 + 'px', top: 150+ 'px'}}>
+                    <div className="desc"  role="dialog" onLoad={this.onLoadFunc()} style={{width: width + 'px', height: height +'px',left: windowWidth/2 - width/2 + 'px', top: 150+ 'px'}}>
                         <div className="close-button" onClick={()=>{setInfo(); this.hideWeather()}}></div>
                         
                     <div className="title"><h2>{markerInfo.type.toUpperCase()}</h2></div>
